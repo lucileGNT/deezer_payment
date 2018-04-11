@@ -6,6 +6,7 @@ use Payment\Entity\Transaction;
 
 /**
  * Class NotificationHelper
+ *
  * Functions useful to process notifications
  *
  * @package Payment\Helper
@@ -17,19 +18,21 @@ class NotificationHelper
 
     public static function processNotification($files, $entityManager) {
 
-        //HTML to be sent to the view
+        //Initialize HTML to be sent to the view
         $result = "";
 
         if ($files["notificationsJSON"]["error"] > 0) { //Error while uploading the file
             $result.='<p class="text-danger">ERROR while uploading the file '.$files["notificationsJSON"]["error"].'</span></p>';
-        }
 
-        else {
+        } else {
+
+            //Open file
 
             $filename = $files["notificationsJSON"]["tmp_name"];
             $handle = fopen($filename, "r");
 
             if ($handle) {
+
                 while (($line = fgets($handle)) !== false) { //Read each line
 
                     //Get line data
@@ -37,7 +40,7 @@ class NotificationHelper
 
                     if (isset($notification->transaction_id) === true && isset($notification->status) === true && isset($notification->date) === true
                         && $notification->transaction_id !== NULL && $notification->status !== NULL && $notification->date !== NULL
-                        && trim($notification->transaction_id) !== "" && trim($notification->status) !== "" && trim($notification->date) !== "") {
+                        && trim($notification->transaction_id) !== "" && trim($notification->status) !== "" && trim($notification->date) !== "") { //Make sure data is well formatted
 
                         $transaction_id = $notification->transaction_id;
                         $status = $notification->status;
@@ -48,6 +51,7 @@ class NotificationHelper
                         $transactionDB = $entityManager->getRepository('Payment\Entity\Transaction')->findBy(array('transactionId' => $transaction_id));
 
                         if (!empty($transactionDB)) {
+
                             //If transaction already exists in DB
                             $transactionDB = current($transactionDB);
 
@@ -59,6 +63,7 @@ class NotificationHelper
                             if (empty($statusDB)) {
                                 //Unknown Status
                                 $result .= '<p class="text-danger">' . $transaction_id . ' - ' . $status . ' - ' . date_format($date, 'Y-m-d H:i:s') . ' : ERROR Unknown status</span></p>';
+                                continue;
                             }
 
                             //Check if new status is different from the old one
@@ -93,7 +98,7 @@ class NotificationHelper
                                     }
                                 }
 
-                                //Also set dateUpdated
+                                //Set also dateUpdated
                                 $transactionDB->setDateUpdate($date);
 
                                 $entityManager->persist($transactionDB);
@@ -137,11 +142,15 @@ class NotificationHelper
                                 $entityManager->flush();
 
                                 $result.='<p>' . $transaction_id.' - '.$status.' - '.date_format($date, 'Y-m-d H:i:s') . ' : SUCCESS Insert done</span></p>';
+
+                                unset($newTransactionDB);
                             } else {
+
                                 //Unknown Status
                                 $result.='<p class="text-danger">' . $transaction_id.' - '.$status.' - '.date_format($date, 'Y-m-d H:i:s') . ' : ERROR Unknown status</span></p>';
 
                             }
+
                             continue;
 
                         }
@@ -157,8 +166,10 @@ class NotificationHelper
                 //Stop reading the file
                 fclose($handle);
                 $result.='<p>END OF FILE</p>';
+
             } else {
-                // error while opening the file
+
+                //Error while opening the file
                 $result.='<p class="text-danger">ERROR while opening the file</span></p>';
             }
         }
