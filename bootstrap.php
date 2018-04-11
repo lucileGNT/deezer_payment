@@ -26,8 +26,8 @@ $dbParams = array(
     'host'     => '127.0.0.1',
     'driver'   => 'pdo_mysql',
     'user'     => 'root',
-    'password' => 'pqA/iuThi6>I',
-    'dbname'   => 'deezer_payment_new',
+    'password' => '',
+    'dbname'   => 'deezer_payment',
 );
 $entityManager = EntityManager::create($dbParams, $config);
 
