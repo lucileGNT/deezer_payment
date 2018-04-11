@@ -15,7 +15,7 @@ use Payment\Entity\Transaction;
 class NotificationHelper
 {
 
-    public static function processNotification($files, $entityManager){
+    public static function processNotification($files, $entityManager) {
 
         //HTML to be sent to the view
         $result = "";
@@ -31,7 +31,6 @@ class NotificationHelper
 
             if ($handle) {
                 while (($line = fgets($handle)) !== false) { //Read each line
-
 
                     //Get line data
                     $notification = json_decode($line);
@@ -51,6 +50,16 @@ class NotificationHelper
                         if (!empty($transactionDB)) {
                             //If transaction already exists in DB
                             $transactionDB = current($transactionDB);
+
+                            //Check if s†atus exists in reference table
+                            $statusDB = $entityManager
+                                ->getRepository('Payment\Entity\Status')
+                                ->findBy(array('id' => $status));
+
+                            if (empty($statusDB)) {
+                                //Unknown Status
+                                $result .= '<p class="text-danger">' . $transaction_id . ' - ' . $status . ' - ' . date_format($date, 'Y-m-d H:i:s') . ' : ERROR Unknown status</span></p>';
+                            }
 
                             //Check if new status is different from the old one
                             if ($transactionDB->getStatus() === $status) {
@@ -108,7 +117,6 @@ class NotificationHelper
                                 ->getRepository('Payment\Entity\Status')
                                 ->findBy(array('id' => $status));
 
-
                             if (!empty($statusDB)) {
 
                                 $statusDB = current($statusDB);
@@ -127,7 +135,6 @@ class NotificationHelper
 
                                 $entityManager->persist($newTransactionDB);
                                 $entityManager->flush();
-
 
                                 $result.='<p>' . $transaction_id.' - '.$status.' - '.date_format($date, 'Y-m-d H:i:s') . ' : SUCCESS Insert done</span></p>';
                             } else {
