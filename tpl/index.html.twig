@@ -1,0 +1,23 @@
+{% extends 'layout.html.twig' %}
+
+{% block body %}
+    <p>
+
+        <h2>Payment Notification Import Tool</h2>
+
+        <form method="POST" action="index.php" enctype="multipart/form-data">
+            <p>
+                <label for="notificationsJSON">Please select a JSON file</label>
+                <input name="notificationsJSON" id="notificationsJSON" type="file"/>
+            </p>
+            <p>
+                <input type="submit" name="submit" id="submit"/>
+            </p>
+        </form>
+
+        <div class="result">
+            {{ result | raw }}
+        </div>
+    </p>
+
+{% endblock %}
