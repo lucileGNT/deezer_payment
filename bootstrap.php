@@ -1,5 +1,7 @@
 <?php
-// bootstrap.php
+// Doctrine config file
+// Returns the EntityManager to manage all database actions
+
 use Doctrine\ORM\Tools\Setup;
 use Doctrine\ORM\EntityManager;
 
@@ -21,7 +23,7 @@ $config = Setup::createAnnotationMetadataConfiguration(
     $cache,
     $useSimpleAnnotationReader);
 
-// the connection configuration
+// Webserver and database configuration
 $dbParams = array(
     'host'     => '127.0.0.1',
     'driver'   => 'pdo_mysql',
@@ -29,6 +31,8 @@ $dbParams = array(
     'password' => '',
     'dbname'   => 'deezer_payment',
 );
+
+//EntityManager generation
 $entityManager = EntityManager::create($dbParams, $config);
 
 return $entityManager;

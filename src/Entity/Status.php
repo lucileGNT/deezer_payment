@@ -5,6 +5,8 @@ namespace Payment\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
+ * Reference table listing all the possible status
+ *
  * @ORM\Entity @ORM\Table(name="status")
  **/
 

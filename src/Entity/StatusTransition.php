@@ -6,6 +6,8 @@ namespace Payment\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
+ * Table listing all the possible transitions between statuses
+ *
  * @ORM\Entity @ORM\Table(name="status_transition")
  **/
 class StatusTransition

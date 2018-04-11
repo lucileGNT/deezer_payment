@@ -1,5 +1,7 @@
 <?php
 
+/** Database population */
+
 use Payment\Entity\Status;
 use Payment\Entity\StatusTransition;
 
@@ -8,6 +10,8 @@ ini_set('display_errors', 1);
 
 $entityManager = require_once join(DIRECTORY_SEPARATOR, [__DIR__, 'bootstrap.php']);
 
+
+//Status table data insertion
 
 echo "Loading Status table data...\n";
 
@@ -57,8 +61,10 @@ $status900->setName('Error');
 $status900->setDateToUpdate("");
 $entityManager->persist($status900);
 
+
+//Status transition table data insertion
+
 echo "Loading Status Transition table data...\n";
-//Insert status transition table data
 
 $transition100200 = new StatusTransition();
 $transition100200->setFromStatus(Status::STATUS_AUTHORIZED);
